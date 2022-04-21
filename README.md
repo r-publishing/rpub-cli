@@ -6,9 +6,9 @@ Usage: rpub-cli [--transfer|--balance] [--privKey|--revAddress] [--amount] [--re
 
 To transfer:
 ```
-     ./rpub-cli --transfer --privKey <string> --amount <number> --revAddressTo <string> --validatorHost <url> --readOnlyHost <url>
+     ./rpub-cli --transfer --privKey <string> --amount <number> --revAddressTo <string> --validatorHost <url>
 ```
 To check balance:
 ```
-     ./rpub-cli --balance --revAddress <string> --validatorHost <url> --readOnlyHost <url> --decimals <number> --ticker <string>
+     ./rpub-cli --balance --revAddress <string> --readOnlyHost <url> --decimals <number> --ticker <string>
 ```
