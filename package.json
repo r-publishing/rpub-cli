@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "compile": "tsc  -b --verbose",
-    "build": "rm -rf pkg && pika build . && cd pkg && pkg . --out-path dist"
+    "build": "npx npm run compile && rm -rf pkg && pika build . && cd pkg && pkg . --out-path dist"
   },
   "repository": {
     "type": "git",
