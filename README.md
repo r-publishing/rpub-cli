@@ -1,4 +1,4 @@
-# RPUB-CLI
+# RPUB-CLI v0.0.1
 
 A standalone command line tool for doing simple transfers and checking wallet balance.
 
