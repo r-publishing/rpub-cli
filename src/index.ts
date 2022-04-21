@@ -137,7 +137,7 @@ const runFunction = async function () {
     console.log("Usage: rev-cli [--transfer|--balance] [--privKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]");
     console.log("");
     console.log("To transfer: ./rev-cli --transfer --privKey <string> --amount <number> --revAddressTo <string> --validatorHost <url> --readOnlyHost <url>");
-    console.log("To check balance: ./rev-cli --balance --privKey <string> --revAddress <string> --validatorHost <url> --readOnlyHost <url> --decimals <number> --ticker <string>");
+    console.log("To check balance: ./rev-cli --balance --revAddress <string> --validatorHost <url> --readOnlyHost <url> --decimals <number> --ticker <string>");
   }
 }
 

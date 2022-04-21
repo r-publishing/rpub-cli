@@ -10,5 +10,5 @@ To transfer:
 ```
 To check balance:
 ```
-     ./rpub-cli --balance --privKey <string> --revAddress <string> --validatorHost <url> --readOnlyHost <url> --decimals <number> --ticker <string>
+     ./rpub-cli --balance --revAddress <string> --validatorHost <url> --readOnlyHost <url> --decimals <number> --ticker <string>
 ```
