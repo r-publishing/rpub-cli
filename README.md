@@ -1,12 +1,12 @@
-# RPUB-CLI v0.0.1
+# RPUB-CLI v1.0
 
 A standalone command line tool for doing simple transfers and checking wallet balance.
 
-Usage: rpub-cli [--transfer|--balance] [--privKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]
+Usage: rpub-cli [--transfer|--balance] [--privateKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]
 
 To transfer:
 ```
-     ./rpub-cli --transfer --privKey <string> --amount <number> --revAddressTo <string> --validatorHost <url>
+     ./rpub-cli --transfer --privateKey <string> --amount <number> --revAddressTo <string> --validatorHost <url>
 ```
 To check balance:
 ```

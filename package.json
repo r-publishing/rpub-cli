@@ -1,6 +1,6 @@
 {
   "name": "rpub-cli",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "CLI tools to interact with RPC blockchain",
   "private": true,
   "main": "index.js",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/r-publishing/rchain-fuse-js.git"
+    "url": "git+https://github.com/r-publishing/rpub-cli.git"
   },
   "author": "Theo Hallenius, RChain Publishing LCA",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/r-publishing/rchain-fuse-js/issues"
+    "url": "https://github.com/r-publishing/rpub-cli/issues"
   },
-  "homepage": "https://github.com/r-publishing/rchain-fuse-js#readme",
+  "homepage": "https://github.com/r-publishing/rpub-cli#readme",
   "bin": "dist-node/index.js",
   "dependencies": {
     "@vercel/ncc": "^0.32.0",

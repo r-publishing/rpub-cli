@@ -15,13 +15,13 @@ const optionDefinitions = [
   { name: 'readOnlyHost', alias: 'o', type: String, multiple: false},
   { name: 'validatorHost', alias: 'v', type: String, multiple: false},
   { name: 'command', type: String, multiple: false, defaultOption: true },
-  { name: 'privKey', alias: 'p', type: String, multiple: false }
+  { name: 'privateKey', alias: 'p', type: String, multiple: false }
 ]
 
 
 const options = commandLineArgs(optionDefinitions)
 
-const privateKey = options.privKey;
+const privateKey = options.privateKey;
 const revAddressTo = options.revAddressTo;
 const revAddress = options.revAddress;
 const revAmount = options.amount;
@@ -134,10 +134,10 @@ const runFunction = async function () {
     }
   }
   else {
-    console.log("Usage: rev-cli [--transfer|--balance] [--privKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]");
+    console.log("Usage: rpub-cli [--transfer|--balance] [--privateKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]");
     console.log("");
-    console.log("To transfer: ./rev-cli --transfer --privKey <string> --amount <number> --revAddressTo <string> --validatorHost <url>");
-    console.log("To check balance: ./rev-cli --balance --revAddress <string> --readOnlyHost <url> --decimals <number> --ticker <string>");
+    console.log("To transfer: ./rpub-cli --transfer --privateKey <string> --amount <number> --revAddressTo <string> --validatorHost <url>");
+    console.log("To check balance: ./rpub-cli --balance --revAddress <string> --readOnlyHost <url> --decimals <number> --ticker <string>");
   }
 }
 
