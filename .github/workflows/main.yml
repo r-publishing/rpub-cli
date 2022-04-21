@@ -20,9 +20,22 @@ jobs:
         run: npm install
       - name: Build binaries
         run: npm run build
-      - name: Upload Release Asset
-        id: upload-release-asset 
-        uses: AButler/upload-release-assets@v2.0
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: 'pkg/dist/*;'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+      - name: Upload Release Asset
+        uses: xresloader/upload-to-github-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "pkg/dist/*"
+          release_id: ${{ steps.create_release.outputs.id }}
+          overwrite: true
+          verbose: true
