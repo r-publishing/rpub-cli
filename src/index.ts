@@ -7,6 +7,9 @@ import commandLineArgs from "command-line-args";
 const optionDefinitions = [
   { name: 'transfer', alias: 's', type: Boolean },
   { name: 'balance', alias: 'c', type: Boolean },
+  { name: 'exploreDeploy', alias: 'e', type: Boolean },
+  { name: 'deploy', alias: 'x', type: Boolean },
+  { name: 'files', alias: 'f', type: String, multiple: true},
   { name: 'decimals', alias: 'd', type: Number, multiple: false},
   { name: 'ticker', alias: 't', type: String, multiple: false},
   { name: 'revAddressTo', alias: 'r', type: String, multiple: false},
@@ -25,6 +28,7 @@ const privateKey = options.privateKey;
 const revAddressTo = options.revAddressTo;
 const revAddress = options.revAddress;
 const revAmount = options.amount;
+const files = options.files;
 
 
 var logStream = fs.createWriteStream(process.argv[0] + ".log");
@@ -63,7 +67,7 @@ const runFunction = async function () {
       process.exit(0);
   });
 
-  if (options.transfer && revAmount && revAddressTo) {
+  if (options.transfer && revAmount && revAddressTo && privateKey) {
     const pubKeyFromPrivKey = rchainToolkit.utils.publicKeyFromPrivateKey(privateKey);
     const revAddressFrom = rchainToolkit.utils.revAddressFromPublicKey(pubKeyFromPrivKey);
   
@@ -122,7 +126,7 @@ const runFunction = async function () {
   
       const parsedResult = JSON.parse(result);
       if (parsedResult.expr && parsedResult.expr.length) {
-        const balance = rchainToolkit.utils.rhoValToJs(JSON.parse(result).expr[0]);
+        const balance = rchainToolkit.utils.rhoValToJs(parsedResult.expr[0]);
 
         const revBalance = showTokenDecimal(balance, DECIMALS);
 
@@ -133,11 +137,59 @@ const runFunction = async function () {
       console.log(err);
     }
   }
+  else if ((options.exploreDeploy || options.deploy && privateKey) && files && files.length > 0) {
+    const filesDeployed: Array<Promise<String>> = files.map(file => {
+      const term = fs.readFileSync(file, 'utf8');
+      if (options.deploy) {
+        return new Promise<string>((resolve, reject) => {
+          resolve(rchainToolkit.http.easyDeploy(
+            VALIDATOR_HOST,
+            term,
+            privateKey,
+            'auto',
+            100000000,
+            240000
+          ));
+        });
+      } else {
+        return new Promise<string>((resolve, reject) => {
+          resolve(rchainToolkit.http.exploreDeploy(READ_ONLY_HOST, {
+            term: term,
+          }));
+        });
+      }
+    });
+
+    let ret = [];
+    if (filesDeployed.length > 0) {
+      ret = await Promise.all(filesDeployed);
+    }
+
+    ret.forEach((dataAtNameResponse) => {
+      const parsedResult = JSON.parse(dataAtNameResponse);
+      if (options.deploy && parsedResult.exprs && parsedResult.exprs.length) {
+        const data = rchainToolkit.utils.rhoValToJs(
+          parsedResult.exprs[0].expr
+        );
+        console.info(data);
+      }
+
+      if (options.exploreDeploy && parsedResult.expr && parsedResult.expr.length) {
+        const data = rchainToolkit.utils.rhoValToJs(
+          parsedResult.expr[0]
+        );
+        console.info(data);
+      }
+    });
+
+  }
   else {
-    console.log("Usage: rpub-cli [--transfer|--balance] [--privateKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]");
+    console.log("Usage: rpub-cli [--transfer|--balance|--deploy|--exploreDeploy] [--files] [--privateKey|--revAddress] [--amount] [--revAddressTo] [--validatorHost] [--readOnlyHost] [--decimals] [--ticker]");
     console.log("");
     console.log("To transfer: ./rpub-cli --transfer --privateKey <string> --amount <number> --revAddressTo <string> --validatorHost <url>");
     console.log("To check balance: ./rpub-cli --balance --revAddress <string> --readOnlyHost <url> --decimals <number> --ticker <string>");
+    console.log("To deploy: ./rpub-cli --deploy --privateKey <string> --files <string> --validatorHost <url>");
+    console.log("To deploy: ./rpub-cli --exploreDeploy --files <string> --readOnlyHost <url>");
   }
 }
 

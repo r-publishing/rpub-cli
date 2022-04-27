@@ -12,3 +12,12 @@ To check balance:
 ```
      ./rpub-cli --balance --revAddress <string> --readOnlyHost <url> --decimals <number> --ticker <string>
 ```
+
+To deploy:
+```
+     ./rpub-cli --deploy --privateKey <string> --files <string> --validatorHost <url>
+```
+To deploy:
+```
+     ./rpub-cli --exploreDeploy --privateKey <string> --files <string> --readOnlyHost <url>
+```
