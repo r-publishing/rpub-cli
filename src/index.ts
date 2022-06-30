@@ -1,8 +1,8 @@
 import fs from "fs";
 import process from "process";
-import * as rchainToolkit from 'rchain-toolkit';
+import * as rchainToolkit from '@fabcotech/rchain-toolkit';
 import commandLineArgs from "command-line-args";
- 
+
 
 const optionDefinitions = [
   { name: 'transfer', alias: 's', type: Boolean },
@@ -18,6 +18,7 @@ const optionDefinitions = [
   { name: 'readOnlyHost', alias: 'o', type: String, multiple: false},
   { name: 'validatorHost', alias: 'v', type: String, multiple: false},
   { name: 'command', type: String, multiple: false, defaultOption: true },
+  { name: 'shardId', type: String, alias: 'i', multiple: false },
   { name: 'privateKey', alias: 'p', type: String, multiple: false }
 ]
 
@@ -42,6 +43,7 @@ const VALIDATOR_HOST = options.validatorHost || LOCAL_VALIDATOR_HOST;
 const READ_ONLY_HOST = options.readOnlyHost || LOCAL_READ_ONLY_HOST;
 const DECIMALS = options.decimals || DEFAULT_DECIMALS;
 const TICKER = options.ticker || DEFAULT_TICKER;
+const SHARDID = options.shardId || "";
 
 
 //https://github.com/tgrospic/rnode-client-js/blob/051cfa26356332d99500eb5a565ca824ad8d257f/src/web/controls/common.js#L13
@@ -70,7 +72,7 @@ const runFunction = async function () {
   if (options.transfer && revAmount && revAddressTo && privateKey) {
     const pubKeyFromPrivKey = rchainToolkit.utils.publicKeyFromPrivateKey(privateKey);
     const revAddressFrom = rchainToolkit.utils.revAddressFromPublicKey(pubKeyFromPrivKey);
-  
+
     const transferFundsTerm = rchainToolkit.utils.transferRevTerm({
       from: revAddressFrom,
       to: revAddressTo,
@@ -82,13 +84,16 @@ const runFunction = async function () {
     try {
       await rchainToolkit.http.easyDeploy(
         VALIDATOR_HOST,
-        transferFundsTerm,
-        privateKey,
-        'auto',
-        100000000,
-        240000
+        {
+          term: transferFundsTerm,
+          privateKey: privateKey,
+          phloPrice: 'auto',
+          shardId: SHARDID,
+          phloLimit: 100000000,
+          timeout: 240000
+        }
       );
-      
+
     } catch (err) {
       const errMsg = timestamp + " - " + "[OK] "  + err;
       logStream.write(errMsg + "\n");
@@ -118,12 +123,15 @@ const runFunction = async function () {
         }
       }
     }`;
-  
+
+    var result;
     try {
-      const result = await rchainToolkit.http.exploreDeploy(READ_ONLY_HOST, {
+       result = await rchainToolkit.http.exploreDeploy(READ_ONLY_HOST, {
         term: term,
       });
-  
+
+      // console.log(result);
+
       const parsedResult = JSON.parse(result);
       if (parsedResult.expr && parsedResult.expr.length) {
         const balance = rchainToolkit.utils.rhoValToJs(parsedResult.expr[0]);
@@ -134,6 +142,7 @@ const runFunction = async function () {
         console.log(message);
       }
     } catch (err) {
+      console.log(result);
       console.log(err);
     }
   }
@@ -144,11 +153,14 @@ const runFunction = async function () {
         return new Promise<string>((resolve, reject) => {
           resolve(rchainToolkit.http.easyDeploy(
             VALIDATOR_HOST,
-            term,
-            privateKey,
-            'auto',
-            100000000,
-            240000
+            {
+              term: term,
+              shardId: SHARDID,
+              privateKey: privateKey,
+              phloPrice: 'auto',
+              phloLimit: 100000000,
+              timeout: 240000
+            }
           ));
         });
       } else {
